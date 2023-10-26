@@ -1,15 +1,16 @@
 @import-normalize; /* bring in normalize.css styles */
 
 body {
-  display: flex;
-  justify-content: center;
-  background-color:  #9b9ea3;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 code {
@@ -39,4 +40,7 @@ img {
 }
 button {
   cursor: pointer;
+}
+a {
+  text-decoration: none;
 }
