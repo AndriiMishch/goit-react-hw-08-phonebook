@@ -1,39 +1,61 @@
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Section from './Section';
-import ContactList from './UserList';
-import ContactForm from './ContactForm';
-import { useSelector } from 'react-redux';
-import { selectContactsItems } from 'redux/selectors';
-import { AppContainer } from './App.styled';
-import { GlobalStyle } from './BaseStyles.styled';
-
-import { fetchContacts } from 'redux/operations';
+import { lazy, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { refresh } from 'redux/auth/operations';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+// import PrivateRoute from 'PrivateRoute';
+// import PublicRoute from 'PublicRoute';
+
+import SharedLayout from 'layout';
+// import HomePage from 'pages/HomePage';
+// import LoginPage from 'pages/LoginPage';
+// import RegisterPage from 'pages/RegisterPage';
+// import ContactsPage from 'pages/ContactsPage';
+
+const PublicRoute = lazy(() => import('PublicRoute'));
+const PrivateRoute = lazy(() => import('PrivateRoute'));
+
+// const SharedLayout = lazy(() => import('layout'));
+const HomePage = lazy(() => import('pages/HomePage'));
+const LoginPage = lazy(() => import('pages/LoginPage'));
+const RegisterPage = lazy(() => import('pages/RegisterPage'));
+const ContactsPage = lazy(() => import('pages/ContactsPage'));
 
 export default function App() {
-  const contacts = useSelector(selectContactsItems);
   const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refresh());
   }, [dispatch]);
 
   return (
-    <>
-      <AppContainer>
-        <Section title="Add contact">
-          <ContactForm />
-        </Section>
-        {contacts.length > 0 && (
-          <Section title="Contacts">
-            <ContactList />
-          </Section>
-        )}
-        <GlobalStyle />
-      </AppContainer>
-      <ToastContainer />
-    </>
+    <Routes>
+      <Route path="/" element={<SharedLayout />}>
+        <Route index element={<HomePage />} />
+        <Route
+          path="register"
+          element={
+            <PublicRoute>
+              <RegisterPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="contacts"
+          element={
+            <PrivateRoute>
+              <ContactsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Route>
+    </Routes>
   );
 }
